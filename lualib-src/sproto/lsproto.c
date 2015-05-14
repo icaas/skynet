@@ -170,6 +170,18 @@ encode(const struct sproto_arg *args) {
 			return 8;
 		}
 	}
+	case SPROTO_TREAL: {
+		lua_Number v;
+		if (!lua_isnumber(L, -1)) {
+			return luaL_error(L, ".%s[%d] is not an number (Is a %s)", 
+				args->tagname, args->index, lua_typename(L, lua_type(L, -1)));
+		} else {
+			v = lua_tonumber(L, -1);
+		}
+		lua_pop(L,1);
+		*(lua_Number *)args->value = (lua_Number)v;
+		return 8;
+	}
 	case SPROTO_TBOOLEAN: {
 		int v = lua_toboolean(L, -1);
 		if (!lua_isboolean(L,-1)) {
@@ -315,6 +327,11 @@ decode(const struct sproto_arg *args) {
 		// notice: in lua 5.2, 52bit integer support (not 64)
 		lua_Integer v = *(uint64_t*)args->value;
 		lua_pushinteger(L, v);
+		break;
+	}
+	case SPROTO_TREAL: {
+		lua_Number v = *(lua_Number*)args->value;
+		lua_pushnumber(L, v);
 		break;
 	}
 	case SPROTO_TBOOLEAN: {

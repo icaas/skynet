@@ -165,8 +165,9 @@ end
 
 local buildin_types = {
 	integer = 0,
-	boolean = 1,
-	string = 2,
+	real = 1,
+	boolean = 2,
+	string = 3,
 }
 
 local function checktype(types, ptype, t)
