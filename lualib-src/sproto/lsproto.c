@@ -601,6 +601,9 @@ encode_default(const struct sproto_arg *args) {
 		case SPROTO_TINTEGER:
 			lua_pushinteger(L, 0);
 			break;
+		case SPROTO_TREAL:
+			lua_pushnumber(L, 0);
+			break;
 		case SPROTO_TBOOLEAN:
 			lua_pushboolean(L, 0);
 			break;
