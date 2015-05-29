@@ -4,6 +4,8 @@
 
 #include "skynet.h"
 
+#include <unistd.h>
+
 /*
 	uint32_t/string addr 
 	uint32_t/session session
@@ -202,6 +204,9 @@ lunpackresponse(lua_State *L) {
 	return 3;
 }
 
+#ifdef _MSC_VER
+__declspec(dllexport)
+#endif
 int
 luaopen_cluster_core(lua_State *L) {
 	luaL_Reg l[] = {

@@ -762,6 +762,9 @@ lupdate(lua_State *L) {
 	return 0;
 }
 
+#ifdef _MSC_VER
+__declspec(dllexport)
+#endif
 int
 luaopen_sharedata_core(lua_State *L) {
 	luaL_Reg l[] = {

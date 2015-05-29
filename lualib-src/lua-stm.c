@@ -5,6 +5,8 @@
 #include <assert.h>
 #include <string.h>
 
+#include <unistd.h>
+
 #include "rwlock.h"
 #include "skynet_malloc.h"
 
@@ -231,6 +233,9 @@ lread(lua_State *L) {
 	}
 }
 
+#ifdef _MSC_VER
+__declspec(dllexport)
+#endif
 int
 luaopen_stm(lua_State *L) {
 	luaL_checkversion(L);

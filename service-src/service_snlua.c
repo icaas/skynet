@@ -130,6 +130,9 @@ _launch(struct skynet_context * context, void *ud, int type, int session, uint32
 	return 0;
 }
 
+#ifdef _MSC_VER
+__declspec(dllexport)
+#endif
 int
 snlua_init(struct snlua *l, struct skynet_context *ctx, const char * args) {
 	int sz = strlen(args);
@@ -143,6 +146,9 @@ snlua_init(struct snlua *l, struct skynet_context *ctx, const char * args) {
 	return 0;
 }
 
+#ifdef _MSC_VER
+__declspec(dllexport)
+#endif
 struct snlua *
 snlua_create(void) {
 	struct snlua * l = skynet_malloc(sizeof(*l));
@@ -151,12 +157,18 @@ snlua_create(void) {
 	return l;
 }
 
+#ifdef _MSC_VER
+__declspec(dllexport)
+#endif
 void
 snlua_release(struct snlua *l) {
 	lua_close(l->L);
 	skynet_free(l);
 }
 
+#ifdef _MSC_VER
+__declspec(dllexport)
+#endif
 void
 snlua_signal(struct snlua *l, int signal) {
 	skynet_error(l->ctx, "recv a signal %d", signal);

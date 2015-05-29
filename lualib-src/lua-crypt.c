@@ -6,6 +6,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <unistd.h>
+
 #define SMALL_CHUNK 256
 
 /* the eight DES S-boxes */
@@ -870,6 +872,9 @@ lb64decode(lua_State *L) {
 int lsha1(lua_State *L);
 int lhmac_sha1(lua_State *L);
 
+#ifdef _MSC_VER
+__declspec(dllexport)
+#endif
 int
 luaopen_crypt(lua_State *L) {
 	luaL_checkversion(L);

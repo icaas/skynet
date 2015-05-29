@@ -1150,6 +1150,9 @@ lobjectid(lua_State *L) {
 	return 1;
 }
 
+#ifdef _MSC_VER
+__declspec(dllexport)
+#endif
 int
 luaopen_bson(lua_State *L) {
 	luaL_checkversion(L);

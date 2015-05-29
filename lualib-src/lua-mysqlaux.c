@@ -161,7 +161,9 @@ static struct luaL_Reg mysqlauxlib[] = {
     {NULL, NULL}
 };
 
-
+#ifndef _MSC_VER
+__declspec(dllexport)
+#endif
 int luaopen_mysqlaux_c (lua_State *L) {
     lua_newtable(L);
     luaL_setfuncs(L, mysqlauxlib, 0);

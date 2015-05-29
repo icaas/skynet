@@ -2,6 +2,7 @@
 
 #include "skynet_handle.h"
 #include "skynet_server.h"
+#include <unistd.h>
 #include "rwlock.h"
 
 #include <stdlib.h>

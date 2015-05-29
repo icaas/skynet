@@ -151,6 +151,9 @@ mc_nextid(lua_State *L) {
 	return 1;
 }
 
+#ifdef _MSC_VER
+__declspec(dllexport)
+#endif
 int
 luaopen_multicast_core(lua_State *L) {
 	luaL_Reg l[] = {

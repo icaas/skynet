@@ -33,6 +33,9 @@ ldump(lua_State *L) {
 	return 0;
 }
 
+#ifdef _MSC_VER
+__declspec(dllexport)
+#endif
 int
 luaopen_memory(lua_State *L) {
 	luaL_checkversion(L);

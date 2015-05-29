@@ -247,6 +247,9 @@ report_harbor_down(struct harbor *h, int id) {
 	skynet_send(h->ctx, 0, h->slave, PTYPE_TEXT, 0, down, n);
 }
 
+#ifdef _MSC_VER
+__declspec(dllexport)
+#endif
 struct harbor *
 harbor_create(void) {
 	struct harbor * h = skynet_malloc(sizeof(*h));
@@ -255,6 +258,9 @@ harbor_create(void) {
 	return h;
 }
 
+#ifdef _MSC_VER
+__declspec(dllexport)
+#endif
 void
 harbor_release(struct harbor *h) {
 	int i;
@@ -587,7 +593,12 @@ harbor_command(struct harbor * h, const char * msg, size_t sz, int session, uint
 	}
 	case 'S' :
 	case 'A' : {
+#ifdef _MSC_VER
+		assert(s <= 1024);
+		char buffer[1024+1];
+#else
 		char buffer[s+1];
+#endif
 		memcpy(buffer, name, s);
 		buffer[s] = 0;
 		int fd=0, id=0;
@@ -683,6 +694,9 @@ mainloop(struct skynet_context * context, void * ud, int type, int session, uint
 	}
 }
 
+#ifdef _MSC_VER
+__declspec(dllexport)
+#endif
 int
 harbor_init(struct harbor *h, struct skynet_context *ctx, const char * args) {
 	h->ctx = ctx;

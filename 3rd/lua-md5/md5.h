@@ -14,6 +14,9 @@
 #define HASHSIZE       16
 
 void md5 (const char *message, long len, char *output);
+#ifdef _MSC_VER
+__declspec(dllexport)
+#endif
 int luaopen_md5_core (lua_State *L);
 
 

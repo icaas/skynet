@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+#include <unistd.h>
+
 #if defined(__APPLE__)
 #include <sys/time.h>
 #endif

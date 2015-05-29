@@ -8,6 +8,8 @@
 #include <mach/mach.h>
 #endif
 
+#include <unistd.h>
+
 #define NANOSEC 1000000000
 #define MICROSEC 1000000
 
@@ -132,6 +134,9 @@ lyield(lua_State *L) {
 	return co_yield(L);
 }
 
+#ifdef _MSC_VER
+__declspec(dllexport)
+#endif
 int
 luaopen_profile(lua_State *L) {
 	luaL_checkversion(L);

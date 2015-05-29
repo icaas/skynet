@@ -146,7 +146,12 @@ _worker(void *p) {
 
 static void
 _start(int thread) {
+#ifdef _MSC_VER
+	assert(thread <= 32);
+	pthread_t pid[32+3];
+#else
 	pthread_t pid[thread+3];
+#endif
 
 	struct monitor *m = skynet_malloc(sizeof(*m));
 	memset(m, 0, sizeof(*m));
@@ -176,7 +181,11 @@ _start(int thread) {
 		1, 1, 1, 1, 1, 1, 1, 1, 
 		2, 2, 2, 2, 2, 2, 2, 2, 
 		3, 3, 3, 3, 3, 3, 3, 3, };
+#ifdef _MSC_VER
+	struct worker_parm wp[32];
+#else
 	struct worker_parm wp[thread];
+#endif
 	for (i=0;i<thread;i++) {
 		wp[i].m = m;
 		wp[i].id = i;
@@ -198,8 +207,14 @@ _start(int thread) {
 static void
 bootstrap(struct skynet_context * logger, const char * cmdline) {
 	int sz = strlen(cmdline);
+#ifdef _MSC_VER
+	assert(sz <= 1024);
+	char name[1024+1];
+	char args[1024+1];
+#else
 	char name[sz+1];
 	char args[sz+1];
+#endif
 	sscanf(cmdline, "%s %s", name, args);
 	struct skynet_context *ctx = skynet_context_new(name, args);
 	if (ctx == NULL) {

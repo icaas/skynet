@@ -12,6 +12,11 @@
 #include <lauxlib.h>
 #include <signal.h>
 #include <assert.h>
+#include <unistd.h>
+
+#ifdef _MSC_VER
+#include "cpoll/cpoll.h"
+#endif
 
 static int
 optint(const char *key, int opt) {
@@ -105,6 +110,9 @@ main(int argc, char *argv[]) {
 			"usage: skynet configfilename\n");
 		return 1;
 	}
+#ifdef _MSC_VER
+	cpoll_startup();
+#endif
 	skynet_globalinit();
 	skynet_env_init();
 
@@ -138,6 +146,10 @@ main(int argc, char *argv[]) {
 
 	skynet_start(&config);
 	skynet_globalexit();
+
+#ifdef _MSC_VER
+	cpoll_cleanup();
+#endif
 
 	return 0;
 }
