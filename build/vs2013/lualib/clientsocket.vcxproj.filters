@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source files">
+      <UniqueIdentifier>{9ebf698b-6c98-4fd9-ae67-cbdd0a000184}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source files\posix">
+      <UniqueIdentifier>{495831ef-68cb-41cc-a906-82931ad9e673}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\lualib-src\lua-clientsocket.c">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\posix\atomic.c">
+      <Filter>Source files\posix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\posix\unistd.c">
+      <Filter>Source files\posix</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\posix\atomic.h">
+      <Filter>Source files\posix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\posix\unistd.h">
+      <Filter>Source files\posix</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
