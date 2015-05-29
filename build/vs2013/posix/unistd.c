@@ -36,7 +36,7 @@ void usleep(size_t us) {
 }
 
 void sleep(size_t ms) {
-	usleep(ms * 1000);
+	Sleep(ms);
 }
 
 

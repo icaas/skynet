@@ -106,7 +106,11 @@ _timer(void *p) {
 		skynet_updatetime();
 		CHECK_ABORT
 		wakeup(m,m->count-1);
+#ifdef _MSC_VER
+		sleep(2);
+#else
 		usleep(2500);
+#endif
 	}
 	// wakeup socket thread
 	skynet_socket_exit();
