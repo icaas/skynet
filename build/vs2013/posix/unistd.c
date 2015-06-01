@@ -1,5 +1,6 @@
 #include "unistd.h"
 #define WIN32_LEAN_AND_MEAN
+#include <conio.h>
 #include <Windows.h>
 #include <WinSock2.h>
 
@@ -87,7 +88,6 @@ int pipe(int fd[2]) {
 	int client_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if(connect(client_fd, (struct sockaddr*)&sin, sizeof(sin)) == SOCKET_ERROR) {
 		closesocket(listen_fd);
-		closesocket(client_fd);
 		return -1;
 	}
 
@@ -130,6 +130,21 @@ int write(int fd, const void *ptr, size_t sz) {
 }
 
 int read(int fd, void *buffer, size_t sz) {
+
+	// read console input
+	if(fd == 0) {
+		char *buf = (char *) buffer;
+		while(_kbhit()) {
+			char ch = getch();
+			*buf++ = ch;
+			putch(ch);
+			if(ch == '\r') {
+				*buf++ = '\n';
+				putch('\n');
+			}
+		}
+		return buf - (char *) buffer;
+	}
 
 	WSABUF vecs[1];
 	vecs[0].buf = buffer;

@@ -20,6 +20,7 @@
 
 #include <Winsock2.h>
 
+#include <conio.h>
 #include <errno.h>
 #include <map>
 #include <vector>
@@ -248,7 +249,24 @@ int cpoll_wait(int cpfd, struct cpoll_event* events, int maxevents, int timeout)
         wsa_events[i] = cpi[i].wsa_event;
 
 	int num_ready = 0;
-    DWORD wsa_result = WSAWaitForMultipleEvents(cpi.size(), wsa_events, FALSE, INFINITE, FALSE);
+	DWORD wsa_result = 0;
+	for(;;) {
+		wsa_result = WSAWaitForMultipleEvents(cpi.size(), wsa_events, FALSE, 13, FALSE);
+		if(wsa_result != WSA_WAIT_TIMEOUT)
+			break;
+		if(_kbhit()) {
+			// console input handle
+			cpoll_event& ev = events[num_ready++];
+			ev.events = FD_READ;
+			for(int i = 0; i < cpi.size(); i++) {
+				if(cpi[i].fd == 0) {
+					ev.data.ptr = cpi[i].event.data.ptr;
+					break;
+				}
+			}
+			break;
+		}
+	}
     if(wsa_result != WSA_WAIT_TIMEOUT) {
 
         int e = wsa_result - WSA_WAIT_EVENT_0;
@@ -256,9 +274,14 @@ int cpoll_wait(int cpfd, struct cpoll_event* events, int maxevents, int timeout)
         {
             WSANETWORKEVENTS ne;
             if(WSAEnumNetworkEvents(cpi[i].fd, wsa_events[i], &ne) != 0) {
+
+				// ignore stdin handle
+				if(cpi[i].fd == 0)
+					continue;
                 // error?
                 return -1;
-            }
+			}
+
 			cpoll_event& ev = events[num_ready++];
             if(ne.lNetworkEvents != 0) {
 

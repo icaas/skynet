@@ -129,13 +129,7 @@ __declspec(naked) void __sync_synchronize() {
 	__asm {
 		push	ebp
 		mov		ebp,esp
-		int		3
-		_emit 0xf0
-		_emit 0x83
-		_emit 0x0c
-		_emit 0x24
-		_emit 0x00
-		//lock	shl [esp],0
+		lock	or [esp],0
 		pop		ebp
 		ret
 	}
