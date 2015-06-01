@@ -141,6 +141,7 @@ main(int argc, char *argv[]) {
 	config.bootstrap = optstring("bootstrap","snlua bootstrap");
 	config.daemon = optstring("daemon", NULL);
 	config.logger = optstring("logger", NULL);
+	config.logservice = optstring("logservice", "logger");
 
 	lua_close(L);
 
