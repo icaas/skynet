@@ -257,12 +257,18 @@ int cpoll_wait(int cpfd, struct cpoll_event* events, int maxevents, int timeout)
 		if(_kbhit()) {
 			// console input handle
 			cpoll_event& ev = events[num_ready++];
+			ev.data.ptr = NULL;
 			ev.events = FD_READ;
 			for(int i = 0; i < cpi.size(); i++) {
 				if(cpi[i].fd == 0) {
 					ev.data.ptr = cpi[i].event.data.ptr;
 					break;
 				}
+			}
+			// if console service not startup, ignore this
+			if(ev.data.ptr == NULL) {
+				num_ready --;
+				continue;
 			}
 			break;
 		}
