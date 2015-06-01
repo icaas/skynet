@@ -183,6 +183,9 @@
     <ClInclude Include="posix\sched.h">
       <Filter>Source files\posix</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\skynet-src\socket_cpoll.h">
+      <Filter>Source files\skynet-src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="skynet.def">

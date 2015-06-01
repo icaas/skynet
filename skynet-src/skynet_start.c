@@ -86,9 +86,11 @@ _monitor(void *p) {
 	skynet_initthread(THREAD_MONITOR);
 	for (;;) {
 		CHECK_ABORT
+#ifndef _DEBUG
 		for (i=0;i<n;i++) {
 			skynet_monitor_check(m->m[i]);
 		}
+#endif
 		for (i=0;i<5;i++) {
 			CHECK_ABORT
 			sleep(1);

@@ -20,6 +20,7 @@
 
 #include <Winsock2.h>
 
+#include <errno.h>
 #include <map>
 #include <vector>
 
@@ -27,30 +28,45 @@ struct fd_t
 {
     int fd;
     struct cpoll_event event;
+	HANDLE wsa_event;
 
-    fd_t() { }
-    fd_t(int _fd, struct cpoll_event _event) { fd = fd; event = _event; }
+    fd_t() {
+	}
+
+	~fd_t() {
+	}
 };
 
 struct cs_t
 {
 	CRITICAL_SECTION cs;
 
-	void lock() { EnterCriticalSection(&cs); }
-	void unlock() { LeaveCriticalSection(&cs); }
-	cs_t() { InitializeCriticalSection(&cs); }
-	~cs_t() { DeleteCriticalSection(&cs); }
+	void lock()
+	{ EnterCriticalSection(&cs); }
+
+	void unlock()
+	{ LeaveCriticalSection(&cs); }
+
+	cs_t()
+	{ InitializeCriticalSection(&cs); }
+
+	~cs_t()
+	{ DeleteCriticalSection(&cs); }
 };
+
 struct lock_t {
 	cs_t& cs;
 
-	lock_t(cs_t& cs) : cs(cs) { cs.lock(); }
-	~lock_t() { cs.unlock(); }
+	lock_t(cs_t& cs) : cs(cs)
+	{ cs.lock(); }
+
+	~lock_t()
+	{ cs.unlock(); }
 };
+
 cs_t cs;
 #define GUARD()\
 	lock_t lock(cs);
-
 
 typedef std::vector<fd_t> cp_internal;
 
@@ -112,38 +128,27 @@ int cpoll_create(int size)
     // maintaining error condition for compatibility
     // however, this parameter is ignored.
     if(size < 0)
-    {
-        // set errno to EINVAL
-        return -1;
-    }
+        return EINVAL;
 
     ++cp_next_id;
 
     // ran out of ids!  wrapped around.
     if(cp_next_id > (cp_next_id + 1))
-    {
         cp_next_id = 0;
-    }
 
-    while(cp_next_id < (cp_next_id + 1))
-    {
+    while(cp_next_id < (cp_next_id + 1)) {
+
         if(cp_data.find(cp_next_id) == cp_data.end())
-        {
             break;
-        }
-
         ++cp_next_id;
     }
 
-    if(cp_next_id < 0)
-    {
+    if(cp_next_id < 0) {
         // two billion fds, eh...
-        // set errno to ENFILE
-        return -1;
+        return ENFILE;
     }
 
     cp_data[cp_next_id] = cp_internal();
-
     return cp_next_id;
 }
 
@@ -172,171 +177,106 @@ int cpoll_ctl(int cpfd, int opcode, int fd, struct cpoll_event* event)
 {
 	GUARD();
     if(cpfd < 0 || cp_data.find(cpfd) == cp_data.end())
-    {
-        // EBADF
-        return -1;
-    }
+        return EBADF;
 
     // TODO: find out if it's possible to tell whether fd is a socket
     // descriptor.  If so, make sure it is; if not, set EPERM and return -1.
 
     cp_internal& cpi = cp_data[cpfd];
 
-    if(opcode == CPOLL_CTL_ADD)
-    {
-        for(cp_internal::size_type i = 0; i < cpi.size(); ++i)
-        {
+    if(opcode == CPOLL_CTL_ADD) {
+
+        for(cp_internal::size_type i = 0; i < cpi.size(); ++i) { 
             if(cpi[i].fd == fd)
-            {
-                // EEXIST
-                return -1;
-            }
+                return EEXIST;
         }
 
-        fd_t f(fd, *event);
+        fd_t f;
 		f.fd = fd;
 		f.event = *event;
+		f.wsa_event = WSACreateEvent();
         f.event.events |= CPOLLHUP;
         f.event.events |= CPOLLERR;
-
+        WSAEventSelect(f.fd, f.wsa_event, FD_ACCEPT | get_wsa_mask(f.event.events));
         cpi.push_back(f);
 		return 0;
     }
-    else if(opcode == CPOLL_CTL_MOD)
-    {
-        for(cp_internal::size_type i = 0; i < cpi.size(); ++i)
-        {
-            if(cpi[i].fd == fd)
-            {
+    else if(opcode == CPOLL_CTL_MOD) {
+
+        for(cp_internal::size_type i = 0; i < cpi.size(); ++i) {
+
+            if(cpi[i].fd == fd) {
+
                 cpi[i].event = *event;
                 cpi[i].event.events |= CPOLLHUP;
                 cpi[i].event.events |= CPOLLERR;
+		        WSAEventSelect(cpi[i].fd, cpi[i].wsa_event, FD_ACCEPT | get_wsa_mask(cpi[i].event.events));
                 return 0;
             }
         }
-
-        // ENOENT
-        return -1;
+        return ENOENT;
     }
-    else if(opcode == CPOLL_CTL_DEL)
-    {
+    else if(opcode == CPOLL_CTL_DEL) {
+
 		for(cp_internal::iterator itr = cpi.begin(); itr != cpi.end(); ++itr) {
 
 			if(itr->fd == fd) {
+				// now unset the event notifications
+				WSAEventSelect(itr->fd, 0, 0);
+				// clean up event
+				WSACloseEvent(itr->wsa_event);
 				cpi.erase(itr);
 				return 0;
 			}
 		}
-        //for(cp_internal::size_type i = 0; i < cpi.size(); ++i)
-        //{
-        //    if(cpi[i].fd == fd)
-        //    {
-        //        cpi.erase(i);
-        //        return 0;
-        //    }
-        //}
-
-        // ENOENT
-        return -1;
+        return ENOENT;
     }
-
-    // EINVAL
-    return -1;
+    return EINVAL;
 }
 
 int cpoll_wait(int cpfd, struct cpoll_event* events, int maxevents, int timeout)
 {
 	GUARD();
     if(cpfd < 0 || cp_data.find(cpfd) == cp_data.end() || maxevents < 1)
-    {
         /* EINVAL */
         return -1;
-    }
 
     cp_internal& cpi = cp_data[cpfd];
+
     WSAEVENT* wsa_events = new WSAEVENT[cpi.size()];
-
     for(cp_internal::size_type i = 0; i < cpi.size(); ++i)
-    {
-        wsa_events[i] = WSACreateEvent();
-
-        WSAEventSelect(cpi[i].fd, wsa_events[i], get_wsa_mask(cpi[i].event.events));
-    }
-
+        wsa_events[i] = cpi[i].wsa_event;
 
 	int num_ready = 0;
-    DWORD wsa_result;
-	for(;;) {
-		// try accept
-		for(cp_internal::size_type i = 0; i < cpi.size() && num_ready < maxevents; ++i) {
+    DWORD wsa_result = WSAWaitForMultipleEvents(cpi.size(), wsa_events, FALSE, INFINITE, FALSE);
+    if(wsa_result != WSA_WAIT_TIMEOUT) {
 
-			fd_t& fd = cpi[i];
-			struct sockaddr_in addr;
-			int name_len = sizeof(addr);
-			//if(accept(fd.fd, (struct sockaddr *)&addr, &name_len) != SOCKET_ERROR) {
-
-			//	__asm int 3;
-   //             if(cpi[i].event.events & CPOLLONESHOT)
-   //             {
-   //                 cpi[i].event.events = 0;
-   //             }
-
-                events[num_ready].events = FD_CONNECT;
-                //events[num_ready].data.fd = cpi[i].fd;
-				events[num_ready].data.ptr = cpi[i].event.data.ptr;
-                ++num_ready;
-			//}
-		}
-		// try recv
-		wsa_result = WSAWaitForMultipleEvents(cpi.size(), wsa_events, FALSE, 10, FALSE);
-		//if(wsa_result != WSA_WAIT_TIMEOUT)
-		//	__asm int 3;
-		if(wsa_result != WSA_WAIT_TIMEOUT || num_ready > 0)
-			break;
-	}
-
-    if(wsa_result != WSA_WAIT_TIMEOUT)
-    {
         int e = wsa_result - WSA_WAIT_EVENT_0;
-
         for(cp_internal::size_type i = e; i < cpi.size() && num_ready < maxevents; ++i)
         {
             WSANETWORKEVENTS ne;
-            if(WSAEnumNetworkEvents(cpi[i].fd, 0, &ne) != 0)
-            {
+            if(WSAEnumNetworkEvents(cpi[i].fd, wsa_events[i], &ne) != 0) {
                 // error?
                 return -1;
             }
-            if(ne.lNetworkEvents != 0)
-            {
-                if(cpi[i].event.events & CPOLLONESHOT)
-                {
-                    cpi[i].event.events = 0;
-                }
+			cpoll_event& ev = events[num_ready++];
+            if(ne.lNetworkEvents != 0) {
 
-                events[num_ready].events = get_cp_mask(&ne);
-                //events[num_ready].data.fd = cpi[i].fd;
-				events[num_ready].data.ptr = cpi[i].event.data.ptr;
-                ++num_ready;
-            }
+                if(cpi[i].event.events & CPOLLONESHOT)
+                    cpi[i].event.events = 0;
+
+				ev.events = (ne.lNetworkEvents & FD_ACCEPT) ? FD_CONNECT : 0;
+				ev.events |= (ne.lNetworkEvents & FD_CLOSE) ? FD_CLOSE : 0;
+				if(ne.lNetworkEvents & FD_READ)
+					ev.events |= get_cp_mask(&ne);
+				ev.data.ptr = cpi[i].event.data.ptr;
+            } else {
+				// empty event? add an dummy event
+				ev.events = 0;
+				ev.data.ptr = NULL;
+			}
         }
     }
-
-    for(cp_internal::size_type i = 0; i < cpi.size(); ++i)
-    {
-        // now unset the event notifications
-        WSAEventSelect(cpi[i].fd, 0, 0);
-        // clean up event
-        WSACloseEvent(wsa_events[i]);
-    }
-
-    delete [] wsa_events;
-
-    if(num_ready == 0)
-    {
-        // EINTR
-    }
-
     return num_ready;
 }
 
@@ -344,10 +284,16 @@ int cpoll_close(int cpfd)
 {
 	GUARD();
     if(cpfd < 1 || cp_data.find(cpfd) == cp_data.end())
-    {
-        return -1;
-    }
+        return ENOENT;
 
+    cp_internal& cpi = cp_data[cpfd];
+    for(cp_internal::size_type i = 0; i < cpi.size(); ++i) {
+
+		// now unset the event notifications
+		WSAEventSelect(cpi[i].fd, 0, 0);
+		// clean up event
+		WSACloseEvent(cpi[i].wsa_event);
+	}
     cp_data.erase(cpfd);
     return 0;
 }
@@ -356,5 +302,7 @@ void cpoll_cleanup()
 {
 	GUARD();
     WSACleanup();
+	for(std::map<int, cp_internal>::iterator itr = cp_data.begin(); itr != cp_data.end(); ++itr)
+		cpoll_close(itr->first);
     cp_data.clear();
 }
