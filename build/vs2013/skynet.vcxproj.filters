@@ -5,32 +5,11 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Source files\posix">
-      <UniqueIdentifier>{8958e7cb-8e72-48bf-aa35-ec1a09b53614}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source files\posix\sys">
-      <UniqueIdentifier>{f466956a-fb5e-4003-b120-05b4c82eae6a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source files\posix\arpa">
-      <UniqueIdentifier>{b88a7cb3-1abb-4551-86d4-5d1e897e3114}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source files\posix\netinet">
-      <UniqueIdentifier>{24db821c-2e78-4f3d-a0c6-c4bcf8771bb0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source files\skynet-src">
       <UniqueIdentifier>{19302dec-d2f8-450b-91e6-cab9dd2db4b5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source files\posix\cpoll">
-      <UniqueIdentifier>{d5540431-feed-4910-a63b-f73d708f829f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="posix\atomic.c">
-      <Filter>Source files\posix</Filter>
-    </ClCompile>
-    <ClCompile Include="posix\unistd.c">
-      <Filter>Source files\posix</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\skynet-src\malloc_hook.c">
       <Filter>Source files\skynet-src</Filter>
     </ClCompile>
@@ -79,32 +58,8 @@
     <ClCompile Include="..\..\skynet-src\socket_server.c">
       <Filter>Source files\skynet-src</Filter>
     </ClCompile>
-    <ClCompile Include="posix\cpoll\cpoll.cpp">
-      <Filter>Source files\posix\cpoll</Filter>
-    </ClCompile>
-    <ClCompile Include="posix\dlfcn.c">
-      <Filter>Source files\posix</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="posix\atomic.h">
-      <Filter>Source files\posix</Filter>
-    </ClInclude>
-    <ClInclude Include="posix\unistd.h">
-      <Filter>Source files\posix</Filter>
-    </ClInclude>
-    <ClInclude Include="posix\sys\socket.h">
-      <Filter>Source files\posix\sys</Filter>
-    </ClInclude>
-    <ClInclude Include="posix\arpa\inet.h">
-      <Filter>Source files\posix\arpa</Filter>
-    </ClInclude>
-    <ClInclude Include="posix\netinet\in.h">
-      <Filter>Source files\posix\netinet</Filter>
-    </ClInclude>
-    <ClInclude Include="posix\pthread.h">
-      <Filter>Source files\posix</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\skynet-src\socket_server.h">
       <Filter>Source files\skynet-src</Filter>
     </ClInclude>
@@ -164,24 +119,6 @@
     </ClInclude>
     <ClInclude Include="..\..\skynet-src\socket_poll.h">
       <Filter>Source files\skynet-src</Filter>
-    </ClInclude>
-    <ClInclude Include="posix\sys\file.h">
-      <Filter>Source files\posix\sys</Filter>
-    </ClInclude>
-    <ClInclude Include="posix\dlfcn.h">
-      <Filter>Source files\posix</Filter>
-    </ClInclude>
-    <ClInclude Include="posix\netinet\tcp.h">
-      <Filter>Source files\posix\netinet</Filter>
-    </ClInclude>
-    <ClInclude Include="posix\cpoll\cpoll.h">
-      <Filter>Source files\posix\cpoll</Filter>
-    </ClInclude>
-    <ClInclude Include="posix\semaphore.h">
-      <Filter>Source files\posix</Filter>
-    </ClInclude>
-    <ClInclude Include="posix\sched.h">
-      <Filter>Source files\posix</Filter>
     </ClInclude>
     <ClInclude Include="..\..\skynet-src\socket_cpoll.h">
       <Filter>Source files\skynet-src</Filter>

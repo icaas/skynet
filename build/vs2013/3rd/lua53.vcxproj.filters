@@ -5,9 +5,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Source files\posix">
-      <UniqueIdentifier>{ae36878b-548f-449c-abb1-54eb66ebbf32}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\3rd\lua\lapi.c">
@@ -109,9 +106,6 @@
     <ClCompile Include="..\..\..\3rd\lua\lzio.c">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="..\posix\atomic.c">
-      <Filter>Source files\posix</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\3rd\lua\lapi.h">
@@ -191,9 +185,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\3rd\lua\lzio.h">
       <Filter>Source files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\posix\atomic.h">
-      <Filter>Source files\posix</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

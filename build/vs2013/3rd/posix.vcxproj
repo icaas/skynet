@@ -11,10 +11,30 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\lualib-src\lua-clientsocket.c" />
+    <ClCompile Include="..\posix\atomic.c" />
+    <ClCompile Include="..\posix\cpoll\cpoll.cpp" />
+    <ClCompile Include="..\posix\dlfcn.c" />
+    <ClCompile Include="..\posix\unistd.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\posix\arpa\inet.h" />
+    <ClInclude Include="..\posix\atomic.h" />
+    <ClInclude Include="..\posix\cpoll\cpoll.h" />
+    <ClInclude Include="..\posix\dlfcn.h" />
+    <ClInclude Include="..\posix\netinet\in.h" />
+    <ClInclude Include="..\posix\netinet\tcp.h" />
+    <ClInclude Include="..\posix\pthread.h" />
+    <ClInclude Include="..\posix\sched.h" />
+    <ClInclude Include="..\posix\semaphore.h" />
+    <ClInclude Include="..\posix\sys\file.h" />
+    <ClInclude Include="..\posix\sys\socket.h" />
+    <ClInclude Include="..\posix\unistd.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="posix.def" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{990A33D8-F729-4DC7-849D-3AE721DBF6A8}</ProjectGuid>
+    <ProjectGuid>{44F52237-AE31-499F-A74C-4E02B0FAD898}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>lua53</RootNamespace>
   </PropertyGroup>
@@ -45,14 +65,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IntDir>..\output\$(ProjectName)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)..\..\luaclib\</OutDir>
-    <TargetExt>.so</TargetExt>
+    <OutDir>$(SolutionDir)..\..\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>..\output\$(ProjectName)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)..\..\luaclib\</OutDir>
-    <TargetExt>.so</TargetExt>
+    <OutDir>$(SolutionDir)..\..\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -61,13 +79,15 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;LUA_BUILD_AS_DLL;LUA_LIB;_DEBUG;_WINDOWS;_USRDLL;LUA53_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\3rd\lua;..\..\..\skynet-src;..\posix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\posix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ModuleDefinitionFile>$(ProjectDir)posix.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(SolutionDir);$(SolutionDir)..\..\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>posix.lib;pthreadVCE2.lib;lua53.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -79,15 +99,17 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;LUA_BUILD_AS_DLL;LUA_LIB;NDEBUG;_WINDOWS;_USRDLL;LUA53_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\3rd\lua;..\..\..\skynet-src;..\posix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\posix;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>$(ProjectDir)posix.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(SolutionDir);$(SolutionDir)..\..\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>posix.lib;pthreadVCE2.lib;lua53.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

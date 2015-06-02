@@ -4,21 +4,10 @@
     <Filter Include="Source files">
       <UniqueIdentifier>{9ebf698b-6c98-4fd9-ae67-cbdd0a000184}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source files\posix">
-      <UniqueIdentifier>{67bd87e7-2df0-4d67-b7de-f1dece5c5085}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\lualib-src\lua-sharedata.c">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="..\posix\atomic.c">
-      <Filter>Source files\posix</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\posix\atomic.h">
-      <Filter>Source files\posix</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

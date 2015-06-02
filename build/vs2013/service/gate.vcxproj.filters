@@ -4,16 +4,10 @@
     <Filter Include="Source files">
       <UniqueIdentifier>{9ebf698b-6c98-4fd9-ae67-cbdd0a000184}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source files\posix">
-      <UniqueIdentifier>{53633481-1b51-4b2f-a536-50e28bf0951f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\service-src\service_gate.c">
       <Filter>Source files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\posix\unistd.c">
-      <Filter>Source files\posix</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -22,9 +16,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\service-src\hashid.h">
       <Filter>Source files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\posix\unistd.h">
-      <Filter>Source files\posix</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

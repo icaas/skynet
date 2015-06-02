@@ -4,21 +4,10 @@
     <Filter Include="Source files">
       <UniqueIdentifier>{9ebf698b-6c98-4fd9-ae67-cbdd0a000184}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source files\posix">
-      <UniqueIdentifier>{fb6e90d9-9048-453a-9495-c58298bac845}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\lualib-src\lua-profile.c">
       <Filter>Source files</Filter>
     </ClCompile>
-    <ClCompile Include="..\posix\unistd.c">
-      <Filter>Source files\posix</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\posix\unistd.h">
-      <Filter>Source files\posix</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

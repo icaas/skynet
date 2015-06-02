@@ -1,10 +1,9 @@
 #include "unistd.h"
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define WIN32_LEAN_AND_MEAN
 #include <conio.h>
 #include <Windows.h>
 #include <WinSock2.h>
-
-#pragma comment(lib, "pthreadVCE2.lib")
 
 static LONGLONG get_cpu_freq() {
     LARGE_INTEGER freq;
@@ -135,12 +134,12 @@ int read(int fd, void *buffer, size_t sz) {
 	if(fd == 0) {
 		char *buf = (char *) buffer;
 		while(_kbhit()) {
-			char ch = getch();
+			char ch = _getch();
 			*buf++ = ch;
-			putch(ch);
+			_putch(ch);
 			if(ch == '\r') {
 				*buf++ = '\n';
-				putch('\n');
+				_putch('\n');
 			}
 		}
 		return buf - (char *) buffer;

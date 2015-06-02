@@ -4,21 +4,10 @@
     <Filter Include="Source files">
       <UniqueIdentifier>{9ebf698b-6c98-4fd9-ae67-cbdd0a000184}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source files\posix">
-      <UniqueIdentifier>{53633481-1b51-4b2f-a536-50e28bf0951f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\posix\unistd.c">
-      <Filter>Source files\posix</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\service-src\service_harbor.c">
       <Filter>Source files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\posix\unistd.h">
-      <Filter>Source files\posix</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
